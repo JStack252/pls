@@ -48,6 +48,14 @@ pub fn get_rgba(id: u32, path: &Path, size: u8) -> Option<Vec<u8>> {
 
 /// Compute the RGBA data for a given SVG file at a given size.
 fn compute_rgba(path: &Path, size: u8) -> Result<Vec<u8>, Exc> {
+
+	// Guard against unreasonably large icon dimensions.
+	let pixel_check = (size * size) as usize;
+	assert!(
+		pixel_check > 0 && pixel_check <= 1024,
+		"Fatal: Image dimensions are too large to process."
+	);
+
 	// Read SVG file
 	let svg_data = read_to_string(path).map_err(Exc::Io)?;
 
