@@ -4,6 +4,7 @@ use crate::fmt::len;
 use crate::PLS;
 use std::collections::HashMap;
 use std::iter::once;
+use crate::args::dir_group::last_index;
 
 /// The detailed renders node names, and optionally, chosen node metadata in
 /// a tabular layout with one row per node.
@@ -33,7 +34,7 @@ impl Table {
 			.enumerate()
 			.map(|(idx, det)| {
 				let mut cell = det.cell();
-				if idx == PLS.args.details.len() - 1 {
+				if idx == last_index(PLS.args.details.len()) {
 					cell.padding = (0, 0); // Remove right padding from the last column.
 				}
 				(max_widths[idx], det, cell)
@@ -65,7 +66,7 @@ impl Table {
 			.iter()
 			.enumerate()
 			.map(|(det_idx, det)| {
-				if det_idx == PLS.args.details.len() - 1 {
+				if det_idx == last_index(PLS.args.details.len()) {
 					return None;
 				}
 				let end_lim = if self.entries.is_empty() {

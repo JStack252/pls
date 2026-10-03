@@ -57,7 +57,7 @@ fn apply_directive(string: ColoredString, directive: &str) -> ColoredString {
 	// Handle blank directives fast.
 	if directive.is_empty() {
 		return string;
-	};
+	}
 
 	let is_bg = directive.starts_with("bg:");
 	let directive = directive.replace("bg:", "").replace("bright_", "bright ");
@@ -75,30 +75,24 @@ fn apply_directive(string: ColoredString, directive: &str) -> ColoredString {
 		_ => string,
 	};
 
-	let mut color: Option<Color> = None;
-	let caps = TRUE_COLOR.captures(&directive);
-	if let Some(caps) = caps {
-		// RGB true colors
-		let channels: Vec<_> = vec!["red", "green", "blue"]
-			.into_iter()
-			.filter_map(|x| caps[x].parse::<u8>().ok())
-			.collect();
-		if channels.len() == 3 {
-			color = Some(Color::TrueColor {
-				r: channels[0],
-				g: channels[1],
-				b: channels[2],
-			});
-		}
-	} else {
-		// Named ANSI colors
-		color = directive.parse().ok()
-	}
-
-	match color {
-		Some(col) if is_bg => string.on_color(col),
-		Some(col) => string.color(col),
+	match parse_color(&directive) {
+		Some(color) if is_bg => string.on_color(color),
+		Some(color) => string.color(color),
 		None => string,
+	}
+}
+
+/// Parse a normalized directive as an RGB or named ANSI color.
+///
+/// RGB channels must each fit in a `u8`. Invalid colors return `None`.
+fn parse_color(directive: &str) -> Option<Color> {
+	match TRUE_COLOR.captures(directive) {
+		Some(caps) => Some(Color::TrueColor {
+			r: caps["red"].parse::<u8>().ok()?,
+			g: caps["green"].parse::<u8>().ok()?,
+			b: caps["blue"].parse::<u8>().ok()?,
+		}),
+		None => directive.parse().ok(),
 	}
 }
 

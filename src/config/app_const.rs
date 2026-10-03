@@ -1,3 +1,4 @@
+use crate::args::dir_group::last_index;
 use crate::enums::DetailField;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -105,7 +106,7 @@ impl AppConst {
 
 	/// Get the highest configured importance level, i.e. last index in `imp`.
 	pub fn max_imp(&self) -> i8 {
-		self.get_imp(self.imp_styles.len() - 1)
+		self.get_imp(last_index(self.imp_styles.len()))
 	}
 
 	/// Get the importance level at the given index.

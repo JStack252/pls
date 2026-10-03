@@ -1,3 +1,4 @@
+use crate::args::dir_group::is_detailed;
 use crate::enums::{DetailField, SortField, Typ, UnitSys};
 use crate::fmt::render;
 use crate::utils::urls::get_osc;
@@ -210,7 +211,7 @@ impl Args {
 
 	/// Get whether to render the output in detailed view using a table.
 	fn is_detailed(&self) -> bool {
-		self.details.len() >= 2
+		is_detailed(self.details.len())
 	}
 }
 
