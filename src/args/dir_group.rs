@@ -147,7 +147,7 @@ impl DirGroup {
 	/// of nodes. It is invoked both from the top-level and from each parent
 	/// node to sort its children.
 	fn re_sort(nodes: &mut [Node], owner_man: &mut OwnerMan) {
-		if nodes.len() <= 1 {
+		if is_trivial(nodes.len()) {
 			return;
 		}
 		PLS.args.sort_bases.iter().rev().for_each(|field| {
@@ -181,7 +181,7 @@ impl DirGroup {
 	/// Currently, this is specifically tailored to the collapse feature and not a
 	/// generic tree implementation.
 	fn make_tree(nodes: Vec<Node>) -> Vec<Node> {
-		if nodes.len() <= 1 {
+		if is_trivial(nodes.len()) {
 			return nodes;
 		}
 
@@ -224,3 +224,35 @@ impl DirGroup {
 		roots
 	}
 }
+/// Returns whether a list is too short to require sorting or grouping.
+#[inline]
+pub fn is_trivial(len: usize) -> bool {
+	len <= 1
+}
+
+/// Returns whether enough detail fields are set to render a table.
+#[inline]
+pub fn is_detailed(len: usize) -> bool {
+	len >= 2
+}
+
+/// Returns the index of the last element for a collection of the given length.
+#[inline]
+pub fn last_index(len: usize) -> usize {
+	len.saturating_sub(1)
+}
+
+/// Ensure a value is at least `min`, guarding against zero/negative
+/// values in layout math (e.g. division by zero when computing columns).
+#[inline]
+pub fn at_least<T: PartialOrd>(val: T, min: T) -> T {
+	if val < min { min } else { val }
+}
+
+/// Ensure a value is at most `max`, capping allocations to a fixed budget.
+#[inline]
+pub fn at_most<T: PartialOrd>(val: T, max: T) -> T {
+	if val > max { max } else { val }
+}
+
+

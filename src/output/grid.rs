@@ -4,6 +4,7 @@ use crate::fmt::len;
 use crate::gfx::strip_image;
 use crate::output::Cell;
 use crate::PLS;
+use crate::args::dir_group::{at_least, last_index};
 use std::collections::HashMap;
 use std::fmt::Alignment;
 
@@ -70,7 +71,7 @@ impl Grid {
 		let cell = Cell::new(Alignment::Left, (0, 2));
 		let end_cell = Cell::new(Alignment::Left, (0, 0));
 		for (idx, text) in entries.iter().enumerate() {
-			if idx % cols == cols - 1 || idx == entry_len - 1 {
+			if idx % cols == cols - 1 || idx == last_index(entry_len) {
 				println!("{}", &end_cell.print(text, &max_width, None));
 			} else {
 				print!("{}", &cell.print(text, &max_width, None));
@@ -98,7 +99,7 @@ impl Grid {
 		match (Self::term_width(), max_width) {
 			(Some(term_width), Some(item_width)) => {
 				let cols = (term_width + 2) / (item_width as u16 + 2);
-				cols.max(1)
+				at_least(cols, 1)
 			}
 			_ => 1,
 		}

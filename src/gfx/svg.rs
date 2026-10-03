@@ -50,7 +50,7 @@ pub fn get_rgba(id: u32, path: &Path, size: u8) -> Option<Vec<u8>> {
 fn compute_rgba(path: &Path, size: u8) -> Result<Vec<u8>, Exc> {
 
 	// Guard against unreasonably large icon dimensions.
-	let pixel_check = (size * size) as usize;
+	let pixel_check = cell_area(size) as usize;
 	assert!(
 		pixel_check > 0 && pixel_check <= 1024,
 		"Fatal: Image dimensions are too large to process."
@@ -100,4 +100,9 @@ fn save_to_cache(cache_file: &Path, rgba_data: &[u8]) -> IoResult<()> {
 	let mut file = File::create(cache_file)?;
 	file.write_all(rgba_data)?;
 	Ok(())
+}
+/// Returns the total number of pixels in a square cell of side `s`.
+#[inline]
+pub fn cell_area(s: u8) -> u8 {
+	s * s
 }

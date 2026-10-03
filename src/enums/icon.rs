@@ -3,6 +3,7 @@ use crate::PLS;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::{LazyLock, Mutex};
+use crate::args::dir_group::at_most;
 
 struct ImageData {
 	/// the ID assigned by the terminal to our image
@@ -48,11 +49,13 @@ impl Icon {
 	/// The icon size is determined by the width of a cell in the terminal
 	/// multiplied by a scaling factor.
 	pub fn size() -> u8 {
-		let scale = std::env::var("PLS_ICON_SCALE")
-			.ok()
-			.and_then(|string| string.parse().ok())
-			.unwrap_or(1.0f32)
-			.min(2.0); // We only allocate two cells for an icon.
+		let scale = at_most(
+			std::env::var("PLS_ICON_SCALE")
+				.ok()
+				.and_then(|string| string.parse().ok())
+				.unwrap_or(1.0f32),
+			2.0, // We only allocate two cells for an icon.
+		);
 
 		(scale * PLS.window.as_ref().unwrap().cell_width() as f32) // Convert to px.s
 			.round() as u8

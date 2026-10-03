@@ -13,7 +13,7 @@
 //! * [`Group`]
 //! * [`Input`]
 
-mod dir_group;
+pub(crate) mod dir_group;
 mod files_group;
 mod group;
 mod input;
