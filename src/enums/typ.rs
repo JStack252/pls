@@ -31,19 +31,29 @@ static ALL_TYP: LazyLock<Vec<Typ>> = LazyLock::new(|| {
 )]
 #[serde(rename_all = "snake_case")]
 pub enum Typ {
-	Dir,         // regular folder
-	Symlink,     // symbolic link
-	Fifo,        // named pipe
-	Socket,      // file-based socket
-	BlockDevice, // block special device file
-	CharDevice,  // character special device file
-	File,        // regular file
+	/// A regular folder.
+	Dir,
+	/// A symbolic link.
+	Symlink,
+	/// A named pipe.
+	Fifo,
+	/// A file-based socket.
+	Socket,
+	/// A block special device file.
+	BlockDevice,
+	/// A character special device file.
+	CharDevice,
+	/// A regular file.
+	File,
 
-	None, // shorthand: no node types
-	All,  // shorthand: all node types
+	/// Shorthand for no node types.
+	None,
+	/// Shorthand for all node types.
+	All,
 
 	#[clap(skip)]
-	Unknown, // unrecognised type (not a CLI argument)
+	/// An unrecognised type, not usable as a CLI argument.
+	Unknown,
 }
 
 impl From<FileType> for Typ {

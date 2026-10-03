@@ -25,41 +25,67 @@ use std::os::unix::fs::MetadataExt;
 )]
 #[serde(rename_all = "snake_case")]
 pub enum SortField {
-	Dev,   // device ID
-	Ino,   // inode number
-	Nlink, // number of hard links
-	Typ,   // node type
-	Cat,   // node category (directory or file)
+	/// Compare nodes by the ID of the device on which they reside.
+	Dev,
+	/// Compare nodes by their inode numbers.
+	Ino,
+	/// Compare nodes by their number of hard links.
+	Nlink,
+	/// Compare nodes by their type.
+	Typ,
+	/// Compare nodes by their category, a broader classification of
+	/// types into directories and files.
+	Cat,
 
-	User, // user name
-	Uid,  // user ID
+	/// Compare nodes by the name of the user that owns them.
+	User,
+	/// Compare nodes by the ID of the user that owns them.
+	Uid,
 
-	Group, // group name
-	Gid,   // group ID
+	/// Compare nodes by the name of the group that owns them.
+	Group,
+	/// Compare nodes by the ID of the group that owns them.
+	Gid,
 
-	Size,   // storage space
-	Blocks, // number of blocks
+	/// Compare nodes by the storage space they occupy.
+	Size,
+	/// Compare nodes by the number of blocks allocated to them.
+	Blocks,
 
 	// Uses OS-normalised timestamp field
 	// [`created`](std::fs::Metadata::created).
-	Btime, // created at
+	/// Compare nodes by the time they were created, using the
+	/// OS-normalised timestamp field [`created`](std::fs::Metadata::created).
+	Btime,
 
 	// Uses Unix-specific extension fields
 	// [`ctime`](MetadataExt::ctime) and
 	// [`ctime_nsec`](MetadataExt::ctime_nsec).
-	Ctime, // changed at
+	/// Compare nodes by the time their metadata was last changed, using
+	/// the Unix-specific extension fields [`ctime`](MetadataExt::ctime) and
+	/// [`ctime_nsec`](MetadataExt::ctime_nsec).
+	Ctime,
 
 	// Uses OS-normalised timestamp field
 	// [`modified`](std::fs::Metadata::modified).
-	Mtime, // modified at
+	/// Compare nodes by the time they were last modified, using the
+	/// OS-normalised timestamp field [`modified`](std::fs::Metadata::modified).
+	Mtime,
 
 	// Uses OS-normalised timestamp field
 	// [`accessed`](std::fs::Metadata::accessed).
-	Atime, // accessed at
+	/// Compare nodes by the time they were last accessed, using the
+	/// OS-normalised timestamp field [`accessed`](std::fs::Metadata::accessed).
+	Atime,
 
-	Name,  // node name
-	Cname, // canonical name (name in lower case with leading symbols stripped)
-	Ext,   // file extension
+	/// Compare nodes by their names.
+	Name,
+	/// Compare nodes by their canonical names, which are the names in lower
+	/// case with leading symbols stripped, so that nodes whose names differ
+	/// only in case or decoration sort together.
+	Cname,
+	/// Compare nodes by their file extensions.
+	Ext,
 
 	// Reversed sort by the field
 	#[clap(name = "inode_")]
